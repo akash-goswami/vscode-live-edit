@@ -1,15 +1,33 @@
 'use strict';
 
 import {
-    ExtensionContext,
     commands,
+    ExtensionContext,
     window
 } from 'vscode';
 
-export function activate(context: ExtensionContext) {
+import Mode from './enum-mode';
+import MasterNode from './nodes/master';
+import SlaveNode from './nodes/slave';
 
-    let disposable = commands.registerCommand('extension.liveEdit', () => {
-        window.showInformationMessage('Live Edit!');
+export function activate(context: ExtensionContext) {
+    const disposable = commands.registerCommand('extension.liveEdit', () => {
+        // window.showInformationMessage('Live Edit!');
+
+        const modeSelection = window.showQuickPick([Mode.MASTER, Mode.SLAVE]);
+        modeSelection.then(select => {
+            switch (select) {
+                case Mode.MASTER:
+                    // @todo: once this is started the options changes
+                    new MasterNode(context).start();
+                    break;
+
+                case Mode.SLAVE:
+                    // @todo: once this is started the option changes
+                    new SlaveNode(context).start();
+                    break;
+            }
+        });
     });
 
     context.subscriptions.push(disposable);
