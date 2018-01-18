@@ -6,7 +6,7 @@ import {
     window
 } from 'vscode';
 
-import Mode from './enum-mode';
+import { Mode } from './constants';
 import MasterNode from './nodes/master';
 import SlaveNode from './nodes/slave';
 
