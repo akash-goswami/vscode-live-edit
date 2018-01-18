@@ -1,6 +1,6 @@
 import Generic from './generic';
 import { workspace } from 'vscode';
-import { getFilesFromPath } from '../utils'
+import { getFilesFromPath } from '../utils';
 import { ContribStatus } from '../constants';
 
 export default class MasterNode extends Generic {

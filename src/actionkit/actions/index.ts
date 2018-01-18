@@ -1,0 +1,1 @@
+export { default as registerWS } from './register-ws';

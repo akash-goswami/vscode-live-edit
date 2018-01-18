@@ -1,6 +1,6 @@
 interface ShareSpace {
-    name: string,
-    user: [string, number]
+    name: string;
+    user: [string, number];
 }
 
 export default ShareSpace;

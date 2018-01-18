@@ -1,12 +1,16 @@
 import { ExtensionContext, window } from 'vscode';
 import ShareSpace from './share-space';
 import * as redis from 'redis';
+import Dispatcher from '../actionkit/dispatcher';
+import { promisifyMsgClientAPI } from '../utils';
+import Action from '../actionkit/action';
 
 export default abstract class Generic {
     protected sharespace: ShareSpace;
 
     context: ExtensionContext;
     messagingClient: Object;
+    dispatcher: Dispatcher;
 
     readonly PROMPT_WS: string = '';
     readonly PROMPT_OWNER: string = '';
@@ -14,6 +18,8 @@ export default abstract class Generic {
     constructor (context: ExtensionContext) {
         this.context = context;
         this.messagingClient = redis.createClient();
+        promisifyMsgClientAPI(this.messagingClient);
+        this.dispatcher = new Dispatcher(this.messagingClient);
     }
 
     private gatherStartInfo (): Promise<string[]> {
@@ -46,16 +52,19 @@ export default abstract class Generic {
         };
     }
 
-    abstract async onStart ()
+    abstract async onStart ();
 
-    protected abstract getContributionBit(): number
+    protected abstract getContributionBit(): number;
 
     async start () {
         // Initial prompt to get the workspace name and user name
         const info = await this.gatherStartInfo();
-        
+
         // ShareSpace config copy saved for each node. This copy contains information for the project
         this.populateShareSpaceConfig(info, this.getContributionBit());
+
+        // Make entry of the sharespace name to the server, if the key already exist the ops fails
+        const resp = await this.dispatcher.dispatch(Action.REGISTER_WORKSPACE, { spaceName: this.sharespace.name });
 
         // OnStart hook called. The master has to load all the files on the central messaging server. Slave has to
         // look for files update.
