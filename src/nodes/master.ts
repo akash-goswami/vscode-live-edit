@@ -2,6 +2,7 @@ import Generic from './generic';
 import { workspace } from 'vscode';
 import { getFilesFromPath } from '../utils';
 import { ContribStatus } from '../constants';
+import Action from '../actionkit/action';
 
 export default class MasterNode extends Generic {
     static readonly ROOT_PATH = workspace.rootPath;
@@ -14,7 +15,9 @@ export default class MasterNode extends Generic {
     }
 
     async onStart () {
-        const files = await getFilesFromPath(MasterNode.ROOT_PATH);
-        console.log(files);
+        this.dispatcher.dispatch(Action.UPLOAD_FILES, {
+            rootPath: MasterNode.ROOT_PATH,
+            spaceName: this.sharespace.name
+        });
     }
 }

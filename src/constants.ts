@@ -8,13 +8,21 @@ export enum Mode {
     SLAVE = 'Join a workspace'
 }
 
-export enum MessageServerStoringKeys {
-    SPACES = 'SPACES'
-}
+export const MessageServerStoringKeys = {
+    SPACES: 'SPACES',
+    FILES: 'FILES',
+    BROADCAST: 'BROADCAST'
+};
 
 export const MessageServerFeedbackCode = {
-    SetEntry: {
+    SetEntry: val => val > 0 ? MessageServerFeedbackCode.Global.SUCCESS : MessageServerFeedbackCode.Global.FAILURE,
+    ListEntry: val => val > 0 ? MessageServerFeedbackCode.Global.SUCCESS : MessageServerFeedbackCode.Global.FAILURE,
+    Global: {
         SUCCESS: 1,
         FAILURE: 0
     }
+};
+
+export const SubscriptionMessages = {
+    FILES_UPLOADED: 'FILES_UPLOADED'
 };

@@ -9,6 +9,9 @@ export default class Dispatcher {
     }
 
     async dispatch (actionName: string, payload: Object): Promise<ActionStatus> {
+        if (!payload) {
+            payload = { timestamp: +new Date() };
+        }
         return actions[actionName](this.endpoint, payload);
     }
 }

@@ -8,7 +8,7 @@ import {
 let fn: ActionDef;
 fn = async function(client: any, payload: any): Promise<ActionStatus> {
     const resp = await client.$async$.sadd(MessageServerStoringKeys.SPACES, payload.spaceName);
-    if (resp === MessageServerFeedbackCode.SetEntry.SUCCESS) {
+    if (MessageServerFeedbackCode.SetEntry(resp) === MessageServerFeedbackCode.Global.SUCCESS) {
         return Promise.resolve(new ActionStatus(ActionStatus.SUCCESS, {}));
     } else {
         return Promise.reject(new ActionStatus(ActionStatus.FAILURE, { message: 'Already exist' }));
