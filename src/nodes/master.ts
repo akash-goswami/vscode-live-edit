@@ -2,7 +2,7 @@ import Generic from './generic';
 import { workspace } from 'vscode';
 import { getFilesFromPath } from '../utils';
 import { ContribStatus } from '../constants';
-import Action from '../actionkit/action';
+import Action from '../services/action';
 
 export default class MasterNode extends Generic {
     static readonly ROOT_PATH = workspace.rootPath;

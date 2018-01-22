@@ -1,7 +1,7 @@
 import { ExtensionContext, window } from 'vscode';
 import ShareSpace from './share-space';
 import * as redis from 'redis';
-import Dispatcher from '../actionkit/dispatcher';
+import Dispatcher from '../services/dispatcher';
 import { promisifyMsgClientAPI } from '../utils';
 import Action from '../actionkit/action';
 
