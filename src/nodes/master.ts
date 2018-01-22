@@ -3,6 +3,7 @@ import { workspace } from 'vscode';
 import { getFilesFromPath } from '../utils';
 import { ContribStatus } from '../constants';
 import Action from '../services/action';
+import * as MsgAction from './master-msg-actions/index';
 
 export default class MasterNode extends Generic {
     static readonly ROOT_PATH = workspace.rootPath;
@@ -12,6 +13,25 @@ export default class MasterNode extends Generic {
 
     getContributionBit (): number {
         return ContribStatus.OWNER;
+    }
+
+    getSubscriptionChannels(): string[] {
+        return [
+            'FILE_CONTENT'
+        ];
+    }
+
+    getChannelActions(): Object {
+        const preparedActions = { };
+        for (const action in MsgAction) {
+            if (!({}).hasOwnProperty.call(MsgAction, action)) {
+                continue;
+            }
+            preparedActions[action] = MsgAction[action]({
+                rootPath: MasterNode.ROOT_PATH
+            });
+        }
+        return preparedActions;
     }
 
     async onStart () {

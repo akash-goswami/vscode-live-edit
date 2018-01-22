@@ -21,3 +21,29 @@ export function promisifyMsgClientAPI(client: any): void {
         lpush: promisify(client.lpush).bind(client)
     };
 }
+
+export class PubSubStore {
+    private store: Object;
+    constructor () {
+        this.store = {};
+    }
+
+    entry (key: string, fn: Function): PubSubStore {
+        let storeVal;
+        if (key in this.store) {
+            this.store[key].push(fn);
+            return this;
+        }
+        storeVal = this.store[key] = [];
+        storeVal.push(fn);
+        return this;
+    }
+
+    list (key: string): Function[] {
+        return this[key] || [];
+    }
+
+    has (key: string): boolean {
+        return (key in this.store);
+    }
+}

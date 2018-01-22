@@ -52,9 +52,25 @@ export default abstract class Generic {
         };
     }
 
-    abstract async onStart ();
+    abstract async onStart();
 
     protected abstract getContributionBit(): number;
+
+    protected abstract getSubscriptionChannels(): string[];
+
+    protected abstract getChannelActions(): Object;
+
+    private onStartGeneric(): void {
+        const subscriptionChannels: string[] = this.getSubscriptionChannels();
+        const actions = this.getChannelActions();
+        for (const channel of subscriptionChannels) {
+            this.dispatcher.dispatch('subscribe', {
+                channel: channel,
+                fn: subscriptionChannels[channel],
+                spaceName: this.sharespace.name
+            });
+        }
+    }
 
     async start () {
         // Initial prompt to get the workspace name and user name
@@ -69,5 +85,6 @@ export default abstract class Generic {
         // OnStart hook called. The master has to load all the files on the central messaging server. Slave has to
         // look for files update.
         await this.onStart();
+        this.onStartGeneric();
     }
 }
