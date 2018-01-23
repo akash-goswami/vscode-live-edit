@@ -24,18 +24,29 @@ export function promisifyMsgClientAPI(client: any): void {
 
 export class PubSubStore {
     private store: Object;
+    private history: Object;
+
     constructor () {
         this.store = {};
+        this.history = {};
     }
 
     entry (key: string, fn: Function): PubSubStore {
-        let storeVal;
-        if (key in this.store) {
-            this.store[key].push(fn);
+        if (!(key in this.store)) {
+            (this.history[key] = this.history[key] || []).push(fn);
             return this;
         }
-        storeVal = this.store[key] = [];
-        storeVal.push(fn);
+        this.store[key].push(fn);
+        return this;
+    }
+
+    create (key: string): PubSubStore {
+        if (key in this.store) {
+            return this;
+        }
+        this.store[key] = [];
+        this.store[key].push(...(this.history[key] || []));
+        delete this.history[key];
         return this;
     }
 
