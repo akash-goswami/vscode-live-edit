@@ -29,7 +29,7 @@ export default class Dispatcher {
         const qualifiedChannelName = `${this.host.sharespace.name}.${channelName}`;
         console.log(qualifiedChannelName);
         if (!this.store.has(qualifiedChannelName)) {
-            this.endpoint.subscribe(qualifiedChannelName).then(d => console.log('success'), e => console.log('failure'));
+            this.endpoint.subscribe(qualifiedChannelName);
         }
         this.store.entry(qualifiedChannelName, fn);
         return this;
