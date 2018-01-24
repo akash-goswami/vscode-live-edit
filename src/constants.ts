@@ -25,6 +25,5 @@ export const MessageServerFeedbackCode = {
 
 export const SubscriptionMessages = {
     FILES_UPLOADED: 'FILES_UPLOADED',
-    FILE_CONTENT: 'FILE_CONTENT',
-    PUSH_FILE_CONTENT: 'PUSH_FILE_CONTENT'
+    FILE_CONTENT: 'FILE_CONTENT'
 };

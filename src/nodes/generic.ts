@@ -3,7 +3,7 @@ import ShareSpace from './share-space';
 import * as redis from 'redis';
 import Dispatcher from '../services/dispatcher';
 import { promisifyMsgClientAPI } from '../utils';
-import Action from '../actionkit/action';
+import Action from '../services/action';
 
 export default abstract class Generic {
     protected sharespace: ShareSpace;
@@ -19,7 +19,7 @@ export default abstract class Generic {
         this.context = context;
         this.messagingClient = redis.createClient();
         promisifyMsgClientAPI(this.messagingClient);
-        this.dispatcher = new Dispatcher(this.messagingClient);
+        this.dispatcher = new Dispatcher(this.messagingClient, this);
     }
 
     private gatherStartInfo (): Promise<string[]> {
@@ -64,11 +64,7 @@ export default abstract class Generic {
         const subscriptionChannels: string[] = this.getSubscriptionChannels();
         const actions = this.getChannelActions();
         for (const channel of subscriptionChannels) {
-            this.dispatcher.dispatch('subscribe', {
-                channel: channel,
-                fn: subscriptionChannels[channel],
-                spaceName: this.sharespace.name
-            });
+            this.dispatcher.on(channel, actions[channel]);
         }
     }
 
@@ -85,6 +81,8 @@ export default abstract class Generic {
         // OnStart hook called. The master has to load all the files on the central messaging server. Slave has to
         // look for files update.
         await this.onStart();
+
+        // Do generic start ops which performs common ops across master / slave
         this.onStartGeneric();
     }
 }

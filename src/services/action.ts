@@ -1,4 +1,5 @@
 export default {
     REGISTER_WORKSPACE: 'registerWS',
-    UPLOAD_FILES: 'uploadFiles'
+    UPLOAD_FILES: 'uploadFiles',
+    PUBLISH: 'publish'
 };

@@ -11,4 +11,13 @@ export default class SlaveNode extends Generic {
 
     async onStart () {
     }
+
+    getSubscriptionChannels(): string[] {
+        return [
+        ];
+    }
+
+    getChannelActions(): Object {
+        return {};
+    }
 }
