@@ -3,19 +3,28 @@ import ActionStatus from './action-status';
 import { PubSubStore } from '../utils';
 
 export default class Dispatcher {
-    private pubEndpoint: any;
-    private subEndpoint: any;
+    private endpoints: any;
     private host: any;
     private store: PubSubStore;
 
     constructor (pubClient: any, subClient: any, host: any) {
-        this.pubEndpoint = pubClient;
-        this.subEndpoint = subClient;
+        this.endpoints = {
+            pub: pubClient,
+            sub: subClient
+        };
         this.host = host;
         this.store = new PubSubStore();
-        this.subEndpoint.on('message', (channel, payload) => {
-            this.store.list(channel).forEach(fn => {
-                fn(payload);
+        this.endpoints.sub.on('message', (channel, payload) => {
+            this.store.list(channel).forEach(async fn => {
+                const res = await fn(JSON.parse(payload));
+                if (res.canRebounce()) {
+                    const rebounceData = res.getRebounceData();
+                    actions.publish(this.endpoints, {
+                        spaceName: this.host.sharespace.name,
+                        channel: rebounceData[0],
+                        params: rebounceData[1]
+                    });
+                }
             });
         });
     }
@@ -24,14 +33,14 @@ export default class Dispatcher {
         if (!payload) {
             payload = { timestamp: +new Date(), dispatcher: this };
         }
-        return actions[actionName]({ pub: this.pubEndpoint, sub: this.subEndpoint }, payload);
+        return actions[actionName](this.endpoints, payload);
     }
 
     on(channelName: string, fn: Function): Dispatcher {
         const qualifiedChannelName = `${this.host.sharespace.name}.${channelName}`;
         console.log(qualifiedChannelName);
         if (!this.store.has(qualifiedChannelName)) {
-            this.subEndpoint.subscribe(qualifiedChannelName);
+            this.endpoints.sub.subscribe(qualifiedChannelName);
         }
         this.store.entry(qualifiedChannelName, fn);
         return this;
