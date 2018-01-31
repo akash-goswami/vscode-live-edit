@@ -6,8 +6,8 @@ import {
 } from '../../constants';
 
 let fn: ActionDef;
-fn = async function(client: any, payload: any): Promise<ActionStatus> {
-    const resp = await client.$async$.sadd(MessageServerStoringKeys.SPACES, payload.spaceName);
+fn = async function(endpoints: any, payload: any): Promise<ActionStatus> {
+    const resp = await endpoints.pub.$async$.sadd(MessageServerStoringKeys.SPACES, payload.spaceName);
     if (MessageServerFeedbackCode.SetEntry(resp) === MessageServerFeedbackCode.Global.SUCCESS) {
         return Promise.resolve(new ActionStatus(ActionStatus.SUCCESS, {}));
     } else {

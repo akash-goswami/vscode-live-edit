@@ -9,7 +9,8 @@ export default abstract class Generic {
     protected sharespace: ShareSpace;
 
     context: ExtensionContext;
-    messagingClient: Object;
+    pubClient: Object;
+    subClient: Object;
     dispatcher: Dispatcher;
 
     readonly PROMPT_WS: string = '';
@@ -17,9 +18,10 @@ export default abstract class Generic {
 
     constructor (context: ExtensionContext) {
         this.context = context;
-        this.messagingClient = redis.createClient();
-        promisifyMsgClientAPI(this.messagingClient);
-        this.dispatcher = new Dispatcher(this.messagingClient, this);
+        this.pubClient = redis.createClient();
+        this.subClient = redis.createClient();
+        promisifyMsgClientAPI(this.pubClient);
+        this.dispatcher = new Dispatcher(this.pubClient, this.subClient, this);
     }
 
     private gatherStartInfo (): Promise<string[]> {

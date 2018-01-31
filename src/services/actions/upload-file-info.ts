@@ -11,12 +11,13 @@ import {
 } from '../../constants';
 
 let fn: ActionDef;
-fn = async function(client: any, payload: any): Promise<ActionStatus> {
+fn = async function(endpoints: any, payload: any): Promise<ActionStatus> {
     const key = `${payload.spaceName}-${MessageServerStoringKeys.FILES}`;
     const files = await getFilesFromPath(payload.rootPath);
+    const client = endpoints.pub;
     const resp = await client.$async$.lpush(key, files);
     if (MessageServerFeedbackCode.ListEntry(resp) === MessageServerFeedbackCode.Global.SUCCESS) {
-        await publish(client, {
+        await publish(endpoints, {
             channel: SubscriptionMessages.FILES_UPLOADED,
             spaceName: payload.spaceName,
             params: {
