@@ -66,7 +66,7 @@ export default abstract class Generic {
         const subscriptionChannels: string[] = this.getSubscriptionChannels();
         const actions = this.getChannelActions();
         for (const channel of subscriptionChannels) {
-            this.dispatcher.on(channel, actions[channel]);
+            this.dispatcher.on(channel, payload => actions[channel](JSON.parse(payload)));
         }
     }
 
