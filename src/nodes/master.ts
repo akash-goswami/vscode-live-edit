@@ -35,6 +35,9 @@ export default class MasterNode extends Generic {
     }
 
     async onStart () {
+        // Make entry of the sharespace name to the server, if the key already exist the ops fails
+        const resp = await this.dispatcher.dispatch(Action.REGISTER_WORKSPACE, { spaceName: this.sharespace.name });
+
         this.dispatcher.dispatch(Action.UPLOAD_FILES, {
             rootPath: MasterNode.ROOT_PATH,
             spaceName: this.sharespace.name

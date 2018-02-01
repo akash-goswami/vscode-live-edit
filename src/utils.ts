@@ -18,7 +18,9 @@ export function getFilesFromPath(path: string): Promise<string[]> {
 export function promisifyMsgClientAPI(client: any): void {
     client.$async$ = {
         sadd: promisify(client.sadd).bind(client),
-        lpush: promisify(client.lpush).bind(client)
+        lpush: promisify(client.lpush).bind(client),
+        lrange: promisify(client.lrange).bind(client),
+        llen: promisify(client.llen).bind(client)
     };
 }
 

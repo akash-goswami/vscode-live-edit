@@ -1,4 +1,5 @@
 import Generic from './generic';
+import Action from '../services/action';
 import { ContribStatus } from '../constants';
 
 export default class SlaveNode extends Generic {
@@ -10,10 +11,14 @@ export default class SlaveNode extends Generic {
     }
 
     async onStart () {
+        this.dispatcher.dispatch(Action.DOWNLOAD_FILES, {
+            spaceName: this.sharespace.name
+        });
     }
 
     getSubscriptionChannels(): string[] {
         return [
+            'POST_FILE_CONTENT'
         ];
     }
 

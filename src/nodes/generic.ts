@@ -77,9 +77,6 @@ export default abstract class Generic {
         // ShareSpace config copy saved for each node. This copy contains information for the project
         this.populateShareSpaceConfig(info, this.getContributionBit());
 
-        // Make entry of the sharespace name to the server, if the key already exist the ops fails
-        const resp = await this.dispatcher.dispatch(Action.REGISTER_WORKSPACE, { spaceName: this.sharespace.name });
-
         // OnStart hook called. The master has to load all the files on the central messaging server. Slave has to
         // look for files update.
         await this.onStart();
