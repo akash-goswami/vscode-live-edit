@@ -5,7 +5,6 @@ import ActionStatus from '../../services/action-status';
 export default function(context: any): Function {
     return async function(payload: any): Promise<Object> {
         return new Promise((res, rej) => {
-            console.log('logging from service', context.rootPath, payload.filePath);
             const absPath = join(context.rootPath, payload.filePath);
             readFile(absPath, { encoding: 'utf-8' }, (err, data) => {
                 if (err) {
@@ -15,6 +14,7 @@ export default function(context: any): Function {
                         .rebounce('POST_FILE_CONTENT')
                         .rebounceParam({
                             ack: payload.ack,
+                            file: payload.filePath,
                             data
                         })
                     );
