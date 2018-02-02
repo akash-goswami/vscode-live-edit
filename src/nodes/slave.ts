@@ -1,6 +1,7 @@
 import Generic from './generic';
 import Action from '../services/action';
 import { ContribStatus } from '../constants';
+import { window } from 'vscode';
 
 export default class SlaveNode extends Generic {
     readonly PROMPT_WS: string = 'Join workspace';
@@ -11,9 +12,10 @@ export default class SlaveNode extends Generic {
     }
 
     async onStart () {
-        this.dispatcher.dispatch(Action.DOWNLOAD_FILES, {
+        const status = await this.dispatcher.dispatch(Action.DOWNLOAD_FILES, {
             spaceName: this.sharespace.name
         });
+        window.showQuickPick(status.serialize().response.files);
     }
 
     getSubscriptionChannels(): string[] {

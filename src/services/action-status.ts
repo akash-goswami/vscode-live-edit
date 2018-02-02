@@ -41,7 +41,7 @@ export default class ActionStatus {
         return this;
     }
 
-    serialize (): Object {
+    serialize (): any {
         return {
             status: this.status,
             response: this.response
